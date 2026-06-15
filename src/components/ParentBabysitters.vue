@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import { babysitterService } from '../services/babysitter.service'
 
 export default {
   name: 'ParentBabysitters',
@@ -65,10 +65,10 @@ export default {
     async search() {
       this.loading = true
       try {
-        const response = await axios.get('/api/babysitters', { params: this.filters })
+        const response = await babysitterService.search(this.filters)
         this.babysitters = response.data
-      } catch (error) {
-        console.error('Erreur lors de la recherche')
+      } catch {
+        // Géré par l'intercepteur du client API
       } finally {
         this.loading = false
       }

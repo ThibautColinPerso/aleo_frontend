@@ -39,6 +39,17 @@ describe('router navigation guard', () => {
       guard({ meta: {} }, {}, next)
       expect(next).toHaveBeenCalledWith()
     })
+
+    it('/inscription-confirmee est accessible sans authentification', () => {
+      // La route de confirmation d'inscription n'a pas de meta.requiresAuth
+      guard({ meta: {}, path: '/inscription-confirmee' }, {}, next)
+      expect(next).toHaveBeenCalledWith()
+    })
+
+    it('/validation-email est accessible sans authentification', () => {
+      guard({ meta: {}, path: '/validation-email' }, {}, next)
+      expect(next).toHaveBeenCalledWith()
+    })
   })
 
   describe('route protégée sans rôle spécifique', () => {

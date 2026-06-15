@@ -38,8 +38,9 @@
 </template>
 
 <script>
-import axios from 'axios'
+import { authService } from '../services/auth.service'
 import { useAuthStore } from '../stores/auth'
+import { useNotificationStore } from '../stores/notification'
 import { useRouter } from 'vue-router'
 
 export default {
@@ -53,21 +54,22 @@ export default {
   },
   setup() {
     const authStore = useAuthStore()
+    const notif = useNotificationStore()
     const router = useRouter()
-    return { authStore, router }
+    return { authStore, notif, router }
   },
   methods: {
     async login() {
       try {
-        const response = await axios.post('/api/login', { email: this.email, password: this.password })
+        const response = await authService.login(this.email, this.password)
         this.authStore.login(response.data.user, response.data.token)
         if (response.data.user.role === 'parent') {
           this.router.push('/parent-dashboard')
         } else {
           this.router.push('/babysitter-dashboard')
         }
-      } catch (error) {
-        alert('Erreur de connexion: Email ou mot de passe incorrect')
+      } catch {
+        this.notif.error('Email ou mot de passe incorrect')
       }
     }
   }

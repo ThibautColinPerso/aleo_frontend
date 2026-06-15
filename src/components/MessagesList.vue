@@ -1,5 +1,5 @@
 <template>
-  <div class="parent-messages">
+  <div class="messages-view">
     <h2>💬 Messagerie</h2>
     <div class="messages-container">
       <div v-if="loading" class="loading">Chargement des messages...</div>
@@ -27,10 +27,10 @@
 </template>
 
 <script>
-import axios from 'axios'
+import { messageService } from '../services/message.service'
 
 export default {
-  name: 'ParentMessages',
+  name: 'MessagesList',
   data() {
     return {
       messages: [],
@@ -44,17 +44,16 @@ export default {
     async loadMessages() {
       this.loading = true
       try {
-        const response = await axios.get('/api/messages')
+        const response = await messageService.getMessages()
         this.messages = response.data
-      } catch (error) {
-        console.error('Erreur lors du chargement des messages')
+      } catch {
+        // Les erreurs HTTP sont gérées par l'intercepteur du client API
       } finally {
         this.loading = false
       }
     },
     formatDate(dateString) {
-      const date = new Date(dateString)
-      return date.toLocaleDateString('fr-FR', {
+      return new Date(dateString).toLocaleDateString('fr-FR', {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
@@ -67,7 +66,7 @@ export default {
 </script>
 
 <style scoped>
-.parent-messages h2 {
+.messages-view h2 {
   color: #2c3e50;
   margin-bottom: 20px;
 }
@@ -148,40 +147,17 @@ export default {
 }
 
 .btn-reply {
-  padding: 8px 16px;
+  padding: 6px 14px;
   background-color: #3b82f6;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-weight: 600;
-  transition: all 0.3s ease;
   font-size: 13px;
+  transition: background-color 0.3s ease;
 }
 
 .btn-reply:hover {
   background-color: #2563eb;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-@media (max-width: 768px) {
-  .parent-messages h2 {
-    font-size: 18px;
-  }
-
-  .message-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .message-from {
-    flex-direction: column;
-    gap: 5px;
-  }
-
-  .message-date {
-    margin-left: 0;
-  }
 }
 </style>

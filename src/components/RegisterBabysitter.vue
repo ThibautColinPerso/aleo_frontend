@@ -71,7 +71,8 @@
 </template>
 
 <script>
-import axios from 'axios'
+import { authService } from '../services/auth.service'
+import { useNotificationStore } from '../stores/notification'
 import { useRouter } from 'vue-router'
 
 export default {
@@ -93,8 +94,9 @@ export default {
     }
   },
   setup() {
+    const notif = useNotificationStore()
     const router = useRouter()
-    return { router }
+    return { notif, router }
   },
   methods: {
     handleFileUpload(event) {
@@ -103,21 +105,15 @@ export default {
     async register() {
       try {
         const formData = new FormData()
-        Object.keys(this.form).forEach(key => {
-          formData.append(key, this.form[key])
-        })
-        for (let file of this.files) {
+        Object.keys(this.form).forEach(key => formData.append(key, this.form[key]))
+        for (const file of this.files) {
           formData.append('files', file)
         }
-        await axios.post('/api/register', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        })
-        alert('Inscription réussie')
-        this.router.push('/login')
-      } catch (error) {
-        alert('Erreur d\'inscription')
+        const response = await authService.registerBabysitter(formData)
+        const email = response.data?.email || this.form.email
+        this.router.push({ name: 'RegistrationSuccess', query: { email } })
+      } catch {
+        this.notif.error('Erreur lors de l\'inscription')
       }
     }
   }

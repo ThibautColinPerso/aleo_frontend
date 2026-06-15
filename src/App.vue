@@ -5,18 +5,21 @@
       <router-view />
     </main>
     <AppFooter />
+    <AppNotification />
   </div>
 </template>
 
 <script>
 import AppHeader from './components/AppHeader.vue'
 import AppFooter from './components/AppFooter.vue'
+import AppNotification from './components/AppNotification.vue'
 
 export default {
   name: 'App',
   components: {
     AppHeader,
-    AppFooter
+    AppFooter,
+    AppNotification
   }
 }
 </script>

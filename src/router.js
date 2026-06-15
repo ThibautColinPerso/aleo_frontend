@@ -6,11 +6,12 @@ import WhyUs from './views/WhyUs.vue'
 import Login from './components/Login.vue'
 import RegisterParent from './components/RegisterParent.vue'
 import RegisterBabysitter from './components/RegisterBabysitter.vue'
+import RegistrationSuccess from './views/RegistrationSuccess.vue'
+import EmailValidation from './views/EmailValidation.vue'
 import ParentDashboard from './views/ParentDashboard.vue'
 import BabysitterDashboard from './views/BabysitterDashboard.vue'
 import ParentBabysitters from './components/ParentBabysitters.vue'
-import ParentMessages from './components/ParentMessages.vue'
-import BabysitterMessages from './components/BabysitterMessages.vue'
+import MessagesList from './components/MessagesList.vue'
 import BabysitterProfile from './components/BabysitterProfile.vue'
 
 const routes = [
@@ -20,7 +21,8 @@ const routes = [
   { path: '/login', name: 'Login', component: Login },
   { path: '/register-parent', name: 'RegisterParent', component: RegisterParent },
   { path: '/register-babysitter', name: 'RegisterBabysitter', component: RegisterBabysitter },
-  { path: '/babysitters', component: ParentBabysitters },
+  { path: '/inscription-confirmee', name: 'RegistrationSuccess', component: RegistrationSuccess },
+  { path: '/validation-email', name: 'EmailValidation', component: EmailValidation },
   {
     path: '/parent-dashboard',
     component: ParentDashboard,
@@ -28,7 +30,7 @@ const routes = [
     children: [
       { path: '', redirect: '/parent-dashboard/babysitters' },
       { path: 'babysitters', component: ParentBabysitters },
-      { path: 'messages', component: ParentMessages }
+      { path: 'messages', component: MessagesList }
     ]
   },
   {
@@ -37,7 +39,7 @@ const routes = [
     meta: { requiresAuth: true, role: 'babysitter' },
     children: [
       { path: '', redirect: '/babysitter-dashboard/messages' },
-      { path: 'messages', component: BabysitterMessages },
+      { path: 'messages', component: MessagesList },
       { path: 'profile', component: BabysitterProfile }
     ]
   }

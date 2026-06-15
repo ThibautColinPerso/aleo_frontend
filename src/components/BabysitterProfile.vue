@@ -118,7 +118,8 @@
 </template>
 
 <script>
-import axios from 'axios'
+import { profileService } from '../services/profile.service'
+import { useNotificationStore } from '../stores/notification'
 import { useAuthStore } from '../stores/auth'
 
 export default {
@@ -141,7 +142,8 @@ export default {
   },
   setup() {
     const authStore = useAuthStore()
-    return { authStore }
+    const notif = useNotificationStore()
+    return { authStore, notif }
   },
   mounted() {
     this.loadProfile()
@@ -150,11 +152,11 @@ export default {
     async loadProfile() {
       this.loading = true
       try {
-        const response = await axios.get('/api/profile')
+        const response = await profileService.getProfile()
         this.profile = response.data.profile
         this.existingDocuments = response.data.documents || []
-      } catch (error) {
-        console.error('Erreur lors du chargement du profil')
+      } catch {
+        // Géré par l'intercepteur du client API
       } finally {
         this.loading = false
       }
@@ -165,33 +167,26 @@ export default {
     async updateProfile() {
       try {
         const formData = new FormData()
-        Object.keys(this.profile).forEach(key => {
-          formData.append(key, this.profile[key])
-        })
-        for (let file of this.files) {
+        Object.keys(this.profile).forEach(key => formData.append(key, this.profile[key]))
+        for (const file of this.files) {
           formData.append('files', file)
         }
-        await axios.put('/api/profile', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        })
-        alert('Profil mis à jour avec succès')
+        await profileService.updateProfile(formData)
+        this.notif.success('Profil mis à jour avec succès')
         this.files = []
         this.loadProfile()
-      } catch (error) {
-        alert('Erreur de mise à jour du profil')
+      } catch {
+        this.notif.error('Erreur lors de la mise à jour du profil')
       }
     },
     async deleteDocument(docName) {
-      if (confirm('Êtes-vous sûr de vouloir supprimer ce document ?')) {
-        try {
-          await axios.delete('/api/profile/documents', { params: { doc: docName } })
-          this.existingDocuments = this.existingDocuments.filter(d => d !== docName)
-          alert('Document supprimé avec succès')
-        } catch (error) {
-          alert('Erreur lors de la suppression du document')
-        }
+      if (!window.confirm('Êtes-vous sûr de vouloir supprimer ce document ?')) return
+      try {
+        await profileService.deleteDocument(docName)
+        this.existingDocuments = this.existingDocuments.filter(d => d !== docName)
+        this.notif.success('Document supprimé avec succès')
+      } catch {
+        this.notif.error('Erreur lors de la suppression du document')
       }
     }
   }
