@@ -13,6 +13,7 @@ import BabysitterDashboard from './views/BabysitterDashboard.vue'
 import ParentBabysitters from './components/ParentBabysitters.vue'
 import MessagesList from './components/MessagesList.vue'
 import BabysitterProfile from './components/BabysitterProfile.vue'
+import CarteNourrices from './components/CarteNourrices.vue'
 
 const routes = [
   { path: '/', name: 'Home', component: Home },
@@ -30,7 +31,8 @@ const routes = [
     children: [
       { path: '', redirect: '/parent-dashboard/babysitters' },
       { path: 'babysitters', component: ParentBabysitters },
-      { path: 'messages', component: MessagesList }
+      { path: 'messages', component: MessagesList },
+      { path: 'carte', component: CarteNourrices }
     ]
   },
   {

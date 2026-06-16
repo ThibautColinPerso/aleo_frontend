@@ -11,6 +11,7 @@ export default {
   setup() {
     const navLinks = [
       { to: '/parent-dashboard/babysitters', label: '🔍 Liste des Nourrices' },
+      { to: '/parent-dashboard/carte',       label: '🗺️ Carte des Nourrices' },
       { to: '/parent-dashboard/messages',    label: '💬 Messagerie' }
     ]
     return { navLinks }
