@@ -18,6 +18,7 @@ export const useCarteStore = defineStore('carte', {
     positionParent: null,
     nourrices: [],
     mapsApiKey: null,
+    mapsMapId: null,
     rayonKm: 10,
     chargement: false,
     erreur: null
@@ -41,6 +42,7 @@ export const useCarteStore = defineStore('carte', {
       try {
         const response = await carteService.getConfig()
         this.mapsApiKey = response.data.mapsJavascriptApiKey
+        this.mapsMapId = response.data.mapsMapId
       } catch (e) {
         this.erreur = 'Impossible de charger la configuration Google Maps'
       }
