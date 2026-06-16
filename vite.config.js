@@ -15,7 +15,7 @@ export default defineConfig(({ mode }) => {
     server: {
       proxy: mode === 'development' ? {
         // Proxy toutes les routes API vers le backend local pour éviter CORS
-        '^/(login|parents|babysitters|messages|profile|register)': {
+        '^/(parents|babysitters|nourrices|messages|profile|register)': {
           target: env.VITE_BACKEND_URL || 'http://localhost:8080',
           changeOrigin: true,
           secure: false

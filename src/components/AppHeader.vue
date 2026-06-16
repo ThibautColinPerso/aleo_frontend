@@ -10,23 +10,55 @@
         <router-link to="/why-us" class="nav-link">Pourquoi Nous</router-link>
       </nav>
       <div class="nav-buttons">
-        <router-link to="/register-parent">
-          <button class="btn-auth btn-register">S'inscrire Parent</button>
-        </router-link>
-        <router-link to="/register-babysitter">
-          <button class="btn-auth btn-register">S'inscrire Nourrice</button>
-        </router-link>
-        <router-link to="/login">
-          <button class="btn-auth btn-login">Se connecter</button>
-        </router-link>
+        <template v-if="!authStore.isAuthenticated">
+          <router-link to="/register-parent">
+            <button class="btn-auth btn-register">S'inscrire Parent</button>
+          </router-link>
+          <router-link to="/register-babysitter">
+            <button class="btn-auth btn-register">S'inscrire Nourrice</button>
+          </router-link>
+          <router-link to="/login">
+            <button class="btn-auth btn-login">Se connecter</button>
+          </router-link>
+        </template>
+        <template v-else>
+          <button class="btn-auth btn-logout" @click="handleLogout">Se déconnecter</button>
+        </template>
       </div>
     </div>
   </header>
 </template>
 
 <script>
+import { useAuthStore } from '../stores/auth'
+import { authService } from '../services/auth.service'
+import { useRouter } from 'vue-router'
+
 export default {
-  name: 'AppHeader'
+  name: 'AppHeader',
+  setup() {
+    const authStore = useAuthStore()
+    const router = useRouter()
+
+    async function handleLogout() {
+      const role = authStore.userRole
+      try {
+        if (role === 'parent') {
+          await authService.logoutParent()
+        } else {
+          await authService.logoutBabysitter()
+        }
+        authStore.logout()
+        router.push('/login')
+      } catch (err) {
+        // Le backend a refusé ou est injoignable : on force quand même la déconnexion locale
+        authStore.logout()
+        router.push('/login')
+      }
+    }
+
+    return { authStore, handleLogout }
+  }
 }
 </script>
 
@@ -125,6 +157,17 @@ export default {
 .btn-login:hover {
   background-color: white;
   color: #1e3a8a;
+}
+
+.btn-logout {
+  background-color: transparent;
+  color: white;
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.btn-logout:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-color: white;
 }
 
 /* Mobile Responsive */

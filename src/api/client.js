@@ -15,7 +15,7 @@ const apiClient = axios.create({
   headers: { 'Content-Type': 'application/json' }
 })
 
-// Injecte le token sur chaque requête
+// Injecte le token Bearer sur chaque requête
 apiClient.interceptors.request.use((config) => {
   const token = localStorage.getItem('token')
   if (token) {

@@ -1,18 +1,28 @@
 import apiClient from '../api/client'
 
 export const authService = {
-  login(email, password) {
-    return apiClient.post('/login', { email, password })
+  loginParent(login, motDePasse) {
+    return apiClient.post('/parents/connexion', { login, motDePasse })
+  },
+  loginBabysitter(login, motDePasse) {
+    return apiClient.post('/nourrices/connexion', { login, motDePasse })
   },
   registerParent(payload) {
     return apiClient.post('/parents/inscription', payload)
   },
-  registerBabysitter(formData) {
-    return apiClient.post('/register', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    })
+  registerBabysitter(payload) {
+    return apiClient.post('/nourrices/inscription', payload)
   },
-  validateEmail(token) {
+  validateEmailParent(token) {
     return apiClient.put('/parents/validation', null, { params: { token } })
+  },
+  validateEmailBabysitter(token) {
+    return apiClient.put('/nourrices/validation', null, { params: { token } })
+  },
+  logoutParent() {
+    return apiClient.post('/parents/deconnexion')
+  },
+  logoutBabysitter() {
+    return apiClient.post('/nourrices/deconnexion')
   }
 }

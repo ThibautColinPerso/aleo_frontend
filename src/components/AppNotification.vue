@@ -30,26 +30,31 @@ export default {
 <style scoped>
 .notification-container {
   position: fixed;
-  bottom: 24px;
-  right: 24px;
+  top: 70px; /* hauteur du header */
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 9999;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 10px;
-  max-width: 360px;
+  width: max-content;
+  max-width: min(560px, calc(100vw - 32px));
+  pointer-events: none;
 }
 
 .notification {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 14px 18px;
+  padding: 14px 20px;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  transition: opacity 0.3s ease;
+  pointer-events: all;
+  width: 100%;
 }
 
 .notification--success { background: #d1fae5; color: #065f46; border-left: 4px solid #10b981; }
@@ -57,6 +62,6 @@ export default {
 .notification--info    { background: #dbeafe; color: #1e40af; border-left: 4px solid #3b82f6; }
 
 .notif-enter-active, .notif-leave-active { transition: all 0.3s ease; }
-.notif-enter-from { opacity: 0; transform: translateX(30px); }
-.notif-leave-to   { opacity: 0; transform: translateX(30px); }
+.notif-enter-from { opacity: 0; transform: translateY(-12px); }
+.notif-leave-to   { opacity: 0; transform: translateY(-12px); }
 </style>

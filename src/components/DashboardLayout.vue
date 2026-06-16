@@ -23,6 +23,7 @@
 <script>
 import { useAuthStore } from '../stores/auth'
 import { useRouter } from 'vue-router'
+import { authService } from '../services/auth.service'
 
 export default {
   name: 'DashboardLayout',
@@ -35,9 +36,14 @@ export default {
   setup() {
     const authStore = useAuthStore()
     const router = useRouter()
-    const logout = () => {
-      authStore.logout()
-      router.push('/')
+    const logout = async () => {
+      try {
+        if (authStore.userRole === 'parent') await authService.logoutParent()
+        else await authService.logoutBabysitter()
+      } finally {
+        authStore.logout()
+        router.push('/')
+      }
     }
     return { authStore, logout }
   }

@@ -15,6 +15,10 @@
             </div>
           </div>
           <div class="form-group">
+            <label for="identifiant">Identifiant</label>
+            <input v-model="form.identifiant" id="identifiant" placeholder="sophie.martin" required>
+          </div>
+          <div class="form-group">
             <label for="adresse">Adresse</label>
             <input v-model="form.adresse" id="adresse" placeholder="456 Avenue de l'Exemple" required>
           </div>
@@ -37,28 +41,8 @@
             <input v-model="form.email" id="email" type="email" placeholder="votre.email@example.com" required>
           </div>
           <div class="form-group">
-            <label for="password">Mot de passe</label>
-            <input v-model="form.password" id="password" type="password" placeholder="••••••••" required>
-          </div>
-          <div class="form-group">
-            <label for="documents">Certificats/Diplômes</label>
-            <div class="file-input-wrapper">
-              <input
-                id="documents"
-                type="file"
-                multiple
-                @change="handleFileUpload"
-                accept=".pdf,.jpg,.png,.doc,.docx"
-              >
-              <span class="file-input-text">Cliquez pour sélectionner les fichiers</span>
-            </div>
-            <p class="file-info">Formats acceptés: PDF, JPG, PNG, DOC, DOCX</p>
-            <div v-if="files.length > 0" class="file-list">
-              <p><strong>Fichiers sélectionnés ({{ files.length }}):</strong></p>
-              <ul>
-                <li v-for="(file, index) in files" :key="index">📄 {{ file.name }}</li>
-              </ul>
-            </div>
+            <label for="motDePasse">Mot de passe</label>
+            <input v-model="form.motDePasse" id="motDePasse" type="password" placeholder="••••••••" required>
           </div>
           <button type="submit" class="btn-primary btn-large">S'inscrire</button>
         </form>
@@ -82,15 +66,14 @@ export default {
       form: {
         nom: '',
         prenom: '',
+        identifiant: '',
         adresse: '',
         codePostal: '',
         ville: '',
         telephone: '',
         email: '',
-        password: '',
-        role: 'babysitter'
-      },
-      files: []
+        motDePasse: ''
+      }
     }
   },
   setup() {
@@ -99,17 +82,9 @@ export default {
     return { notif, router }
   },
   methods: {
-    handleFileUpload(event) {
-      this.files = Array.from(event.target.files)
-    },
     async register() {
       try {
-        const formData = new FormData()
-        Object.keys(this.form).forEach(key => formData.append(key, this.form[key]))
-        for (const file of this.files) {
-          formData.append('files', file)
-        }
-        const response = await authService.registerBabysitter(formData)
+        const response = await authService.registerBabysitter(this.form)
         const email = response.data?.email || this.form.email
         this.router.push({ name: 'RegistrationSuccess', query: { email } })
       } catch {
@@ -182,79 +157,6 @@ export default {
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-.file-input-wrapper {
-  border: 2px dashed #1e3a8a;
-  padding: 20px;
-  border-radius: 4px;
-  text-align: center;
-  background-color: #f9f9f9;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.file-input-wrapper:hover {
-  background-color: #f0f9ff;
-}
-
-.file-input-wrapper input[type="file"] {
-  display: none;
-}
-
-.file-input-wrapper {
-  border: 2px dashed #1e3a8a;
-  padding: 20px;
-  border-radius: 4px;
-  text-align: center;
-  background-color: #f9f9f9;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.file-input-wrapper:hover {
-  background-color: #f0f9ff;
-}
-
-.file-input-text {
-  display: block;
-  color: #1e3a8a;
-  font-weight: 600;
-}
-
-.file-info {
-  font-size: 12px;
-  color: #999;
-  margin-top: 8px;
-  margin-bottom: 0;
-}
-
-.file-list {
-  margin-top: 15px;
-  padding: 10px;
-  background-color: #f9f9f9;
-  border-radius: 4px;
-}
-
-.file-list p {
-  margin: 0 0 8px 0;
-  font-size: 13px;
-  color: #666;
-}
-
-.file-list ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.file-list li {
-  font-size: 12px;
-  color: #666;
-  margin: 5px 0;
-  padding: 5px;
-  background-color: white;
-  border-radius: 3px;
-}
-
 .btn-large {
   width: 100%;
   padding: 12px;
@@ -308,10 +210,6 @@ export default {
   .form-group input {
     padding: 10px;
     font-size: 13px;
-  }
-
-  .file-input-wrapper {
-    padding: 15px;
   }
 }
 </style>

@@ -46,7 +46,15 @@ export default {
     }
 
     try {
-      await authService.validateEmail(token)
+      if (this.$route.query.role === 'nourrice') {
+        await authService.validateEmailBabysitter(token)
+      } else if (this.$route.query.role === 'parent') {
+        await authService.validateEmailParent(token)
+      } else {
+        this.errorMessage = 'Lien de validation invalide : rôle manquant ou inconnu.'
+        this.status = 'error'
+        return
+      }
       this.status = 'success'
     } catch (err) {
       this.errorMessage =
